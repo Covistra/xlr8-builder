@@ -11,8 +11,3 @@ This internal endpoint has to be registered with the Git organization.
 
 The builder will look for the xlr8.yaml file in the repository for instructions on how to build and deploy this service. 
 
-
-
-# Secret
-
-xtlo5jKS5lbqUQJ19bLMm9JJIZ9R3Vtt
