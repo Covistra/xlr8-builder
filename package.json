@@ -1,0 +1,18 @@
+{
+    "name": "@xlr8/builder",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "xlr8 start --k8s cluster",
+        "dev": "xlr8 start"
+    },
+    "xlr8": {
+        "exposedAs": "builder",
+        "apiVersion": 1
+    },
+    "dependencies": {
+        "body-parser": "^1.18.3",
+        "fs-extra": "^7.0.1",
+        "simple-git": "^1.107.0",
+        "tmp": "0.0.33"
+    }
+}
