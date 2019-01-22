@@ -10,4 +10,4 @@ ENV NODE_ENV production
 
 EXPOSE 3000
 
-ENTRYPOINT ["xlr8", "start", "--k8s=no"]
+ENTRYPOINT ["xlr8", "start", "--k8s=cluster"]
