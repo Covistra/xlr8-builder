@@ -27,12 +27,15 @@ module.exports = function({ proc, key, helpers, logger }) {
     // Use action helper to create a new action. Helpers to reference actions in other services
     // are also available
     return helpers.action(key, async function({ gitEvent }) {
+
+        const GIT_SSH_COMMAND = "ssh -i /opt/service/deploy -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no";
+
         try {
             logger.debug("Checking if this is a project configured for automatic build");
             let cloneDir = tmp.dirSync();
-            logger.debug("Cloning repo %s in %s", gitEvent.repository.clone_url, cloneDir.name)
-            let git = Git(cloneDir.name);
-            await git.clone(gitEvent.repository.clone_url, cloneDir.name, ["--depth", "1"]);
+            logger.debug("Cloning repo %s in %s", gitEvent.repository.ssh_url, cloneDir.name)
+            let git = Git(cloneDir.name).env({ ...process.env, GIT_SSH_COMMAND });
+            await git.clone(gitEvent.repository.ssh_url, cloneDir.name, ["--depth", "1"]);
             logger.debug("Clone was successful");
             await git.reset(["--hard", gitEvent.commits[0].id]);
             logger.debug("Reset was successful");
@@ -53,7 +56,7 @@ module.exports = function({ proc, key, helpers, logger }) {
 
                 return buildWorker.launch([
                     '--ref', gitEvent.commits[0].id,
-                    '--repoUrl', gitEvent.repository.clone_url,
+                    '--repoUrl', gitEvent.repository.ssh_url,
                     "--registryUrl", config.registryUrl,
                     "--k8s", "cluster",
                     "--namespace", config.namespace
