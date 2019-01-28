@@ -22,11 +22,11 @@ const Path = require('path');
 
 tmp.setGracefulCleanup();
 
-module.exports = function({ proc, key, helpers, logger }) {
+module.exports = function ({ proc, key, helpers, logger }) {
 
     // Use action helper to create a new action. Helpers to reference actions in other services
     // are also available
-    return helpers.action(key, async function({ gitEvent }) {
+    return helpers.action(key, async function ({ gitEvent }) {
 
         const GIT_SSH_COMMAND = "ssh -i /opt/service/deploy -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no";
 

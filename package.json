@@ -10,10 +10,11 @@
         "apiVersion": 1
     },
     "dependencies": {
+        "bluebird": "^3.5.3",
         "body-parser": "^1.18.3",
         "fs-extra": "^7.0.1",
-        "node-rsa": "^1.0.2",
         "simple-git": "^1.107.0",
+        "ssh-keygen": "^0.4.2",
         "tmp": "0.0.33"
     }
 }

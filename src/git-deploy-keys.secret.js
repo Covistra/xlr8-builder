@@ -1,18 +1,25 @@
-const RSA = require('node-rsa');
+const keygen = require('ssh-keygen');
 const fs = require('fs-extra');
 
-module.exports = async function({ proc, key, logger }) {
+module.exports = async function ({ proc, key, logger }) {
 
     let deployKeys = await proc.cluster.getSecret(proc.cluster.makeObjectKey(key));
     if (!deployKeys) {
-        logger.info("Generating keypair for git repository access. Will need to be installed as deploy key in all repos");
-        const rsaKey = new RSA({ b: 2048 });
-        const keyPair = rsaKey.generateKeyPair();
+        logger.debug("Deploy key not found. Generating new ones");
 
-        let pubKey = Buffer.from(keyPair.exportKey('public'), 'utf8').toString('base64');
-        let privKey = Buffer.from(keyPair.exportKey('private'), 'utf8').toString('base64');
+        let keys = await Promise.fromCallback(cb => {
+            return keygen({
+                location: process.cwd() + '/deploy',
+                read: true
+            }, cb);
+        });
 
-        deployKeys = await proc.cluster.createSecret(proc.cluster.makeObjectKey(key), { pub: pubKey, priv: privKey });
+        let pub = Buffer.from(keys.pubKey, 'utf8').toString('base64');
+        let priv = Buffer.from(keys.key, 'utf8').toString('base64');
+
+        logger.debug("Generated keys ", keys.pubKey);
+
+        deployKeys = await proc.cluster.createSecret(proc.cluster.makeObjectKey(key), { pub, priv });
     } else {
         logger.debug("Secret already exists. Reusing it");
     }
